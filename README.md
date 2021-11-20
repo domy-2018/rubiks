@@ -1,0 +1,2 @@
+# rubiks
+Solving rubiks cube
