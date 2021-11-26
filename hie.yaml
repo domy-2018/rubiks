@@ -1,0 +1,16 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:rubiks"
+
+    - path: "app/Rubiks.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/Rubiks.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "app/Cube.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/Cube.hs"
+      component: "rubiks:exe:rubiks"

@@ -27,14 +27,26 @@ extra-source-files:
     CHANGELOG.md
     README.md
 
+library
+    exposed-modules: Cube
+    hs-source-dirs: src
+    ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
+    build-depends:
+        base ^>=4.14.2.0
+       ,containers ^>=0.6.5.0
+    default-language: Haskell2010
+
+
 executable rubiks
-    main-is:          Main.hs
+    main-is:          Rubiks.hs
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules: Cube
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.2.0
-    hs-source-dirs:   app
+                    , mtl ^>=2.2.2
+                    , containers ^>=0.6.5.0
+    hs-source-dirs:   app, src
     default-language: Haskell2010
