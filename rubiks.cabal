@@ -46,7 +46,7 @@ executable rubiks
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.2.0
-                    , mtl ^>=2.2.2
+                    , mtl >=2.0 && <2.3
                     , containers ^>=0.6.5.0
     hs-source-dirs:   app, src
     default-language: Haskell2010
