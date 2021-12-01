@@ -23,30 +23,19 @@ version:            0.1.0.0
 -- A copyright notice.
 -- copyright:
 -- category:
-extra-source-files:
-    CHANGELOG.md
-    README.md
-
-library
-    exposed-modules: Cube
-    hs-source-dirs: src
-    ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
-    build-depends:
-        base ^>=4.14.2.0
-       ,containers ^>=0.6.5.0
-    default-language: Haskell2010
-
 
 executable rubiks
-    main-is:          Rubiks.hs
-
-    -- Modules included in this executable, other than Main.
-    other-modules: Cube
-
+    main-is: Rubiks.hs
+    other-modules:
+        Cube
+        Moves
+    hs-source-dirs: 
+        app
+        src
+    ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.2.0
                     , mtl >=2.0 && <2.3
                     , containers ^>=0.6.5.0
-    hs-source-dirs:   app, src
     default-language: Haskell2010

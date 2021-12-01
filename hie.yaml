@@ -1,8 +1,5 @@
 cradle:
   cabal:
-    - path: "src"
-      component: "lib:rubiks"
-
     - path: "app/Rubiks.hs"
       component: "rubiks:exe:rubiks"
 
@@ -12,5 +9,11 @@ cradle:
     - path: "app/Cube.hs"
       component: "rubiks:exe:rubiks"
 
+    - path: "app/Moves.hs"
+      component: "rubiks:exe:rubiks"
+
     - path: "src/Cube.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/Moves.hs"
       component: "rubiks:exe:rubiks"

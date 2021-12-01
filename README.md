@@ -1,7 +1,11 @@
 # rubiks
-An interactive Haskell imlementation of the Rubiks cube 
+An interactive Haskell implementation of the 2x2 Rubiks cube 
 
 Author : Sean 
+
+Credit to solver algorithm based on code here:
+https://github.com/KitN/rubiks-two-two
+
 
 ## Requirements
 Allows users to enter in a current cube configuration
@@ -33,10 +37,8 @@ A main module to take in user parameters, and handle the IO part.
 
 ### Detailed Design
 
-A cube is represented by:
+A 2x2 cube is represented by:
     - 8 corners
-    - 12 edges
-    - 6 centres
 
 The following is the list of all the corner positions:
     - Front Left Up position (FLU)
@@ -58,43 +60,11 @@ The following is the list of all the corner colours:
     - Orange Green Yellow
     - Orange Blue Yellow
 
-The following is the list of all the edge positions:
-    - Front Up (FU)
-    - Left Up (LU)
-    - Right Up (RU)
-    - Back Up (BU)
-    - Front Left (FL)
-    - Front Right (FR)
-    - Back Left (BL)
-    - Back Right (BR)
-    - Front Down (FD)
-    - Left Down (LD)
-    - Right Down (RD)
-    - Back Down (BD)
-
-The following is the list of all the edge colours:
-    - Red White
-    - Red Blue
-    - Red Green
-    - Red Yellow
-    - White Blue
-    - White Green
-    - Blue Yellow
-    - Green Yellow
-    - White Orange
-    - Blue Orange
-    - Green Orange
-    - Yellow Orange
-
-The following is the list of all positions of the centre squares:
-    - Front (F)
-    - Up (U)
-    - Left (L)
-    - Right (R)
-    - Back (B)
-    - Down (D)
-
-
+Solver algorithm:
+    - Brute force method.
+    - Generate all possible moves for the faces: Front, Up, Right. These moves will be: F, U, R, F', U', R'
+    - As there are 6 possible moves, and 2x2 Rubiks cube is solvable with 14 moves. The total number of possibilities are 6^14 = 78,364,164,096
+    - Once it finds the solution, log the moves to writer, and the intermediate states.  Log the time taken to find the move, and the final state. Print it out to the user.
 
 
 ## Testing
