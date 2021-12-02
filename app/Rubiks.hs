@@ -33,35 +33,37 @@ runGame = do
 -- if batch supply a list of moves, and it will print out result
 -- if interactive, it will allow player to interact and keep asking for next move
 --
+-- <TBC>
+-- right now the interactive restarts with initCube all the time. which is wrong (FIXED)
+-- the writer resets every time it asks for new move. should keep accumulating until game ends.
 --
--- TBC - right now the interactive restarts with initCube all the time. which is wrong
 main :: IO ()
-main = runMain
+main = runMain initCube
   where
     -- main recursion function
-    runMain :: IO ()
-    runMain = do
+    runMain :: Cube -> IO ()
+    runMain c = do
         putStrLn "Make a move: F R B etc.., q to quit"
         input <- getLine
-        checkInput input
+        checkInput c input
 
     -- does some sanity check on User interactive input. 
     -- can be improved to do some regex to ensure valid Cube moves
-    checkInput :: String -> IO ()
-    checkInput xs
+    checkInput :: Cube -> String -> IO ()
+    checkInput c xs
         | xs == "q"    = putStrLn "Thanks for playing"
-        | parseSuccess = startGame moveList
-        | otherwise    = putStrLn "Invalid move detected. Please try again." >> runMain 
+        | parseSuccess = startGame c moveList
+        | otherwise    = putStrLn "Invalid move detected. Please try again." >> runMain c
       where
         maybeMoveList = map parseMove (words xs)
         parseSuccess  = foldl' (\acc mmove -> acc && isJust mmove) True maybeMoveList
         moveList      = map fromJust maybeMoveList
 
     -- taking user interactive input, runs the game and executes the moves
-    startGame :: [Move] -> IO ()
-    startGame moves = do
-        let (a,s,w) = runRWS runGame moves initCube
+    startGame :: Cube -> [Move] -> IO ()
+    startGame c moves = do
+        let (a,s,_) = runRWS runGame moves c
         print a
         print s
-        print w
-        runMain
+        --print w
+        runMain s
