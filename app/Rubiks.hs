@@ -1,10 +1,71 @@
 
 import Cube
 import Moves
-import Control.Monad.RWS.Strict (RWS, runRWS ,get, ask, tell, put)
+import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell)
+import Control.Monad.Trans
 import Data.Maybe (isJust, fromJust)
 import Data.List (foldl')
 
+
+
+type CubeGame = RWST [Move] [Cube] Cube IO
+
+
+interactiveGame :: CubeGame ()
+interactiveGame = do
+    moves <- liftIO getInteractiveInput
+    case moves of
+        Nothing -> liftIO $ putStrLn "Thank you for playing"
+        Just ms -> local (const ms) runMoves >>
+                   interactiveGame
+  where
+    -- runs interactive session
+    getInteractiveInput :: IO (Maybe [Move])
+    getInteractiveInput = do
+        putStrLn "Make a move: F R U B L D, q to quit"
+        input <- parseInput <$> getLine
+        case input of
+            Just [] -> putStrLn "Invalid move. Please try again" >> getInteractiveInput
+            _       -> return input
+
+    -- parses String to a [Move]. If "q" return Nothing, if invalid move, return empty list
+    parseInput :: String -> Maybe [Move]
+    parseInput i
+        | i == "q"     = Nothing
+        | parseSuccess = Just moveList
+        | otherwise    = Just []
+      where
+        maybeMoveList = map parseMove (words i)
+        parseSuccess  = foldl' (\acc mmove -> acc && isJust mmove) True maybeMoveList
+        moveList      = map fromJust maybeMoveList
+
+-- execute the [Move] in Reader
+-- writes to Writer which is [Cube]
+-- updates State which is Cube
+runMoves :: CubeGame ()
+runMoves = do
+    moveList  <- ask
+    cubeState <- get
+    execMoves moveList cubeState
+  where
+    execMoves :: [Move] -> Cube -> CubeGame ()
+    execMoves [] _      = return ()
+    execMoves (m:ms) cs = do
+        let newcube = rotateCube m cs
+        tell [newcube]
+        put newcube
+        --liftIO $ putStrLn ("hello from runmoves, moves is: " ++ show moves)
+        execMoves ms newcube
+
+
+-- main to handle option parameters, interactive or batch, getting the initial state of cube
+main :: IO ()
+main = do
+    (s, w) <- execRWST interactiveGame [] initCube 
+    print s
+    print w
+
+{-
 -- CubeGame is a type synonym to RWS where
 -- Reader - [String] is the list of moves to be made
 -- Writer - [Cube] list of Cube state transitions for each move
@@ -67,3 +128,4 @@ main = runMain initCube
         print s
         --print w
         runMain s
+-}

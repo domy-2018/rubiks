@@ -18,18 +18,18 @@ parseMove m
     | m == "R"  = Just R
     | m == "B"  = Just B
     | m == "D"  = Just D
-    | m == "F'" = Just F
-    | m == "U'" = Just U
-    | m == "L'" = Just L
-    | m == "R'" = Just R
-    | m == "B'" = Just B
-    | m == "D'" = Just D
-    | m == "F2" = Just F
-    | m == "U2" = Just U
-    | m == "L2" = Just L
-    | m == "R2" = Just R
-    | m == "B2" = Just B
-    | m == "D2" = Just D
+    | m == "F'" = Just F'
+    | m == "U'" = Just U'
+    | m == "L'" = Just L'
+    | m == "R'" = Just R'
+    | m == "B'" = Just B'
+    | m == "D'" = Just D'
+    | m == "F2" = Just F2
+    | m == "U2" = Just U2
+    | m == "L2" = Just L2
+    | m == "R2" = Just R2
+    | m == "B2" = Just B2
+    | m == "D2" = Just D2
     | otherwise = Nothing
 
 
