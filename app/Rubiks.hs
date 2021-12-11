@@ -1,25 +1,97 @@
+{-# LANGUAGE RecordWildCards #-}
 
+
+import Params
 import Cube
 import Moves
 import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell)
 import Control.Monad.Trans
-import Data.Maybe (isJust, fromJust)
-import Data.List (foldl')
+import Control.Monad (void)
+import Data.Maybe (isJust)
 
 
 
+-- CubeGame is a type synonym to RWST where
+-- Reader - [Move] is the list of moves to be made
+-- Writer - [Cube] list of Cube state transitions for each move
+-- State  - Cube current state of the cube
 type CubeGame = RWST [Move] [Cube] Cube IO
 
 
+-- kicks off the batch game
+startBatchGame :: CubeGame ()
+startBatchGame = do
+    curCube <- get
+    tell [curCube]
+    runMoves
+
+
+-- writes the initial cube to writer log, then kicks off the interactive game
+startInteractiveGame :: CubeGame ()
+startInteractiveGame = do
+    liftIO $ putStrLn "**********************************"
+    liftIO $ putStrLn "* Welcome to the 2x2 Rubiks Game *"
+    liftIO $ putStrLn "**********************************"
+    liftIO $ putStrLn "To start a new game, choose your initial starting Cube:"
+    liftIO $ putStrLn "    1 - Randomized cube"
+    liftIO $ putStrLn "    2 - Interactively enter in initial cube position"
+    liftIO $ putStrLn "    3 - Solved cube"
+    liftIO $ putStrLn "    4 - Use cube passed in from parameters"
+    i <- liftIO getStartingInput
+    case i of
+        '1' -> liftIO (putStrLn "\nStarting game with randomized cube") >> put randomCube
+        '2' -> liftIO (putStrLn "") >> liftIO enterInteractiveCube >>= put
+        '3' -> liftIO (putStrLn "\nStarting game with a solved cube") >> put initCube 
+        _   -> void $ liftIO (putStrLn "\nStarting game with cube from parameters") -- can only be '4' but using _ as catch all
+    curCube <- get
+    tell [curCube] -- write the first initial cube to writer
+    interactiveGame -- then starts the interactive game
+
+  where
+    getStartingInput :: IO Char
+    getStartingInput = do
+        i <- getChar
+        if i `elem` ['1', '2', '3', '4'] then
+            return i
+        else
+            putStrLn "  --> Invalid input. Valid options are 1, 2, 3, 4. Please try again." >> getStartingInput
+
+    enterInteractiveCube :: IO Cube
+    enterInteractiveCube = do
+        putStrLn "With the cube facing you, enter in the 3 colours of each face of the corners."
+        putStrLn "Valid colours are: W Y R O B G"
+        let cornerColours = map getCornerColours ["FLU", "FRU", "FLD", "FRD", "BLU", "BRU", "BLD", "BRD"]
+        flu_c <- head cornerColours
+        fru_c <- cornerColours !! 1
+        fld_c <- cornerColours !! 2
+        frd_c <- cornerColours !! 3
+        blu_c <- cornerColours !! 4
+        bru_c <- cornerColours !! 5
+        bld_c <- cornerColours !! 6
+        brd_c <- cornerColours !! 7
+        return Cube { flu = flu_c, fru = fru_c, fld = fld_c, frd = frd_c, blu = blu_c, bru = bru_c, bld = bld_c, brd = brd_c }
+
+    getCornerColours :: String -> IO (Colour, Colour, Colour)
+    getCornerColours cs = do
+        putStr $ "Enter colours for corner " ++ cs ++ ": "
+        input <- getLine
+        let pc = parseCorner input
+        maybe (putStrLn "Invalid colours entered. Please try again." >> getCornerColours cs) return pc 
+
+
+-- interactiveGame will recursively prompt the player for input
+-- with the input it will then rotate the cube and print the state of the cube
 interactiveGame :: CubeGame ()
 interactiveGame = do
-    moves <- liftIO getInteractiveInput
+    curCube <- get
+    liftIO $ print curCube
+    moves   <- liftIO getInteractiveInput
     case moves of
         Nothing -> liftIO $ putStrLn "Thank you for playing"
         Just ms -> local (const ms) runMoves >>
                    interactiveGame
   where
-    -- runs interactive session
+    -- get the input from player
     getInteractiveInput :: IO (Maybe [Move])
     getInteractiveInput = do
         putStrLn "Make a move: F R U B L D, q to quit"
@@ -31,13 +103,11 @@ interactiveGame = do
     -- parses String to a [Move]. If "q" return Nothing, if invalid move, return empty list
     parseInput :: String -> Maybe [Move]
     parseInput i
-        | i == "q"     = Nothing
-        | parseSuccess = Just moveList
-        | otherwise    = Just []
+        | i == "q"             = Nothing
+        | isJust maybeMoveList = maybeMoveList
+        | otherwise            = Just []
       where
-        maybeMoveList = map parseMove (words i)
-        parseSuccess  = foldl' (\acc mmove -> acc && isJust mmove) True maybeMoveList
-        moveList      = map fromJust maybeMoveList
+        maybeMoveList = parseMoves i
 
 -- execute the [Move] in Reader
 -- writes to Writer which is [Cube]
@@ -52,80 +122,32 @@ runMoves = do
     execMoves [] _      = return ()
     execMoves (m:ms) cs = do
         let newcube = rotateCube m cs
-        tell [newcube]
+        tell [newcube] -- TBC: will need to update the writer to record moves and the cube
         put newcube
         --liftIO $ putStrLn ("hello from runmoves, moves is: " ++ show moves)
         execMoves ms newcube
 
 
--- main to handle option parameters, interactive or batch, getting the initial state of cube
+-- main to handle option parameters:
+--  - interactive (batch mode?)
+--  - player to pass in initial cube state, or by default a randomized cube, option to start with solved cube
+--  - option to log to file, pass in filename if selected
 main :: IO ()
 main = do
-    (s, w) <- execRWST interactiveGame [] initCube 
+    Params {..} <- cmdLineParser
+    --print mode
+    --print cubeParams
+    --print moveParams
+    --print logFile
+    (s, w) <- case mode of
+                Batch       -> execRWST startBatchGame moveParams cubeParams
+                Interactive -> execRWST startInteractiveGame [] cubeParams
     print s
     print w
 
-{-
--- CubeGame is a type synonym to RWS where
--- Reader - [String] is the list of moves to be made
--- Writer - [Cube] list of Cube state transitions for each move
--- State  - Cube current state of the cube
--- result - String is the result after executing the moves
-type CubeGame = RWS [Move] [Cube] Cube
-
--- taking the RWS, executes the moves and presents the result to the user
-runGame :: CubeGame String
-runGame = do
-    userinput <- ask -- [Move]
-    cubeState <- get -- Cube
-    runMoves userinput cubeState
-  where
-    runMoves :: [Move] -> Cube -> CubeGame String
-    runMoves []     _  = return "done"
-    runMoves (m:ms) cs = do
-        let newcube = rotateCube m cs
-        tell [newcube]
-        put newcube
-        runMoves ms newcube
 
 
--- takes in an input cube, if not starts off with default initCube
--- takes in option to be interactive or batch
--- if batch supply a list of moves, and it will print out result
--- if interactive, it will allow player to interact and keep asking for next move
---
--- <TBC>
--- right now the interactive restarts with initCube all the time. which is wrong (FIXED)
--- the writer resets every time it asks for new move. should keep accumulating until game ends.
---
-main :: IO ()
-main = runMain initCube
-  where
-    -- main recursion function
-    runMain :: Cube -> IO ()
-    runMain c = do
-        putStrLn "Make a move: F R B etc.., q to quit"
-        input <- getLine
-        checkInput c input
 
-    -- does some sanity check on User interactive input. 
-    -- can be improved to do some regex to ensure valid Cube moves
-    checkInput :: Cube -> String -> IO ()
-    checkInput c xs
-        | xs == "q"    = putStrLn "Thanks for playing"
-        | parseSuccess = startGame c moveList
-        | otherwise    = putStrLn "Invalid move detected. Please try again." >> runMain c
-      where
-        maybeMoveList = map parseMove (words xs)
-        parseSuccess  = foldl' (\acc mmove -> acc && isJust mmove) True maybeMoveList
-        moveList      = map fromJust maybeMoveList
 
-    -- taking user interactive input, runs the game and executes the moves
-    startGame :: Cube -> [Move] -> IO ()
-    startGame c moves = do
-        let (a,s,_) = runRWS runGame moves c
-        print a
-        print s
-        --print w
-        runMain s
--}
+
+

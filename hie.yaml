@@ -6,10 +6,16 @@ cradle:
     - path: "src/Rubiks.hs"
       component: "rubiks:exe:rubiks"
 
+    - path: "app/Params.hs"
+      component: "rubiks:exe:rubiks"
+
     - path: "app/Cube.hs"
       component: "rubiks:exe:rubiks"
 
     - path: "app/Moves.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/Params.hs"
       component: "rubiks:exe:rubiks"
 
     - path: "src/Cube.hs"

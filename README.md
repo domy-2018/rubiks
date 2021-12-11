@@ -6,6 +6,32 @@ Author : Sean
 Credit to solver algorithm based on code here:
 https://github.com/KitN/rubiks-two-two
 
+## TODO LIST
+
+1a - fix the params so that it won't throw error on parse issue. Provide more friendly error message
+
+2 - fix the show of the cube, so that it shows the results in a pretty 2D cube layout
+
+3 - put the logic of the RWST, interactive game and batch game into its own module
+
+4 - Fix the Writer to record both moves and the cube. 
+
+5 - Fix the output to the log, so that it prints everything nicely. For both batch and interactive, always print to log.
+
+6 - create a randomized cube
+
+7 - create the solver algorithm to solve the cube
+
+8 - create test cases to test the code
+
+9 - benchmark to benchmark solving the cube ?
+
+## Completed TODO
+
+1 - with the params passed in, if batch, run batch game. if interactive, prompt if player wants to start initial cube
+    with params passed in, or interactively entered in, or random cube, or with default solved cube
+
+
 
 ## Requirements
 Allows users to enter in a current cube configuration

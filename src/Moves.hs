@@ -2,11 +2,12 @@
 
 module Moves where
 
+import Data.Maybe (fromJust)
 
 data Move = F  | U  | L  | R  | B  | D  |
             F' | U' | L' | R' | B' | D' |
             F2 | U2 | L2 | R2 | B2 | D2
-    deriving Show
+    deriving (Show, Read, Eq)
 
 
 -- parses String to Move
@@ -32,5 +33,12 @@ parseMove m
     | m == "D2" = Just D2
     | otherwise = Nothing
 
+-- parses String to Maybe list of Move
+parseMoves :: String -> Maybe [Move]
+parseMoves ms
+    | Nothing `elem` maybeMoveList = Nothing
+    | otherwise                    = Just $ map fromJust maybeMoveList
+  where
+    maybeMoveList = map parseMove (words ms)
 
 
