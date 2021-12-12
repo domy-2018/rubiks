@@ -1,5 +1,4 @@
 
-
 module Cube where
 
 import qualified Moves   as M
@@ -31,7 +30,24 @@ data Cube = Cube { flu :: (Colour, Colour, Colour)
                  , bru :: (Colour, Colour, Colour)
                  , bld :: (Colour, Colour, Colour)
                  , brd :: (Colour, Colour, Colour) }
-    deriving (Show, Read)
+    deriving Read
+
+instance Show Cube where
+    show Cube {flu = (f_flu, l_flu, u_flu), 
+               fru = (f_fru, r_fru, u_fru),
+               fld = (f_fld, l_fld, d_fld),
+               frd = (f_frd, r_frd, d_frd),
+               blu = (b_blu, l_blu, u_blu),
+               bru = (b_bru, r_bru, u_bru),
+               bld = (b_bld, l_bld, d_bld),
+               brd = (b_brd, r_brd, d_brd)} = "    |" ++ show u_blu ++ "|" ++ show u_bru ++ "|\n" ++
+                                              "    |" ++ show u_flu ++ "|" ++ show u_fru ++ "|\n" ++
+        "|" ++ show l_blu ++ "|" ++ show l_flu ++ "|" ++ show f_flu ++ "|" ++ show f_fru ++ "|" ++ show r_fru ++ "|" ++ show r_bru ++ "|" ++ show b_bru ++ "|" ++ show b_blu ++ "|\n" ++
+        "|" ++ show l_bld ++ "|" ++ show l_fld ++ "|" ++ show f_fld ++ "|" ++ show f_frd ++ "|" ++ show r_frd ++ "|" ++ show r_brd ++ "|" ++ show b_brd ++ "|" ++ show b_bld ++ "|\n" ++
+                                              "    |" ++ show d_fld ++ "|" ++ show d_frd ++ "|\n" ++
+                                              "    |" ++ show d_bld ++ "|" ++ show d_brd ++ "|\n"
+
+
 
 -- parse Colour
 parseColour :: String -> Maybe Colour

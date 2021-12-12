@@ -8,10 +8,6 @@ https://github.com/KitN/rubiks-two-two
 
 ## TODO LIST
 
-1a - fix the params so that it won't throw error on parse issue. Provide more friendly error message
-
-2 - fix the show of the cube, so that it shows the results in a pretty 2D cube layout
-
 3 - put the logic of the RWST, interactive game and batch game into its own module
 
 4 - Fix the Writer to record both moves and the cube. 
@@ -30,6 +26,10 @@ https://github.com/KitN/rubiks-two-two
 
 1 - with the params passed in, if batch, run batch game. if interactive, prompt if player wants to start initial cube
     with params passed in, or interactively entered in, or random cube, or with default solved cube
+
+1a - fix the params so that it won't throw error on parse issue. Provide more friendly error message
+
+2 - fix the show of the cube, so that it shows the results in a pretty 2D cube layout
 
 
 
