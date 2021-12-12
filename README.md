@@ -8,12 +8,6 @@ https://github.com/KitN/rubiks-two-two
 
 ## TODO LIST
 
-3 - put the logic of the RWST, interactive game and batch game into its own module
-
-4 - Fix the Writer to record both moves and the cube. 
-
-5 - Fix the output to the log, so that it prints everything nicely. For both batch and interactive, always print to log.
-
 6 - create a randomized cube
 
 7 - create the solver algorithm to solve the cube
@@ -21,6 +15,8 @@ https://github.com/KitN/rubiks-two-two
 8 - create test cases to test the code
 
 9 - benchmark to benchmark solving the cube ?
+
+10 - documentation
 
 ## Completed TODO
 
@@ -31,7 +27,11 @@ https://github.com/KitN/rubiks-two-two
 
 2 - fix the show of the cube, so that it shows the results in a pretty 2D cube layout
 
+(CANCELLED) 3 - put the logic of the RWST, interactive game and batch game into its own module
 
+4 - Fix the Writer to record both moves and the cube. 
+
+5 - Fix the output to the log, so that it prints everything nicely. For both batch and interactive, always print to log.
 
 ## Requirements
 Allows users to enter in a current cube configuration

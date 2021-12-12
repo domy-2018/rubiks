@@ -13,16 +13,16 @@ import Data.Maybe (isJust)
 
 -- CubeGame is a type synonym to RWST where
 -- Reader - [Move] is the list of moves to be made
--- Writer - [Cube] list of Cube state transitions for each move
+-- Writer - [(Maybe Move, Cube)] list of Cube state transitions for each move, first Move is Nothing
 -- State  - Cube current state of the cube
-type CubeGame = RWST [Move] [Cube] Cube IO
+type CubeGame = RWST [Move] [(Maybe Move, Cube)] Cube IO
 
 
 -- kicks off the batch game
 startBatchGame :: CubeGame ()
 startBatchGame = do
     curCube <- get
-    tell [curCube]
+    tell [(Nothing, curCube)]
     runMoves
 
 
@@ -44,7 +44,7 @@ startInteractiveGame = do
         '3' -> liftIO (putStrLn "\nStarting game with a solved cube") >> put initCube 
         _   -> void $ liftIO (putStrLn "\nStarting game with cube from parameters") -- can only be '4' but using _ as catch all
     curCube <- get
-    tell [curCube] -- write the first initial cube to writer
+    tell [(Nothing, curCube)] -- write the first initial cube to writer
     interactiveGame -- then starts the interactive game
 
   where
@@ -122,11 +122,15 @@ runMoves = do
     execMoves [] _      = return ()
     execMoves (m:ms) cs = do
         let newcube = rotateCube m cs
-        tell [newcube] -- TBC: will need to update the writer to record moves and the cube
+        tell [(Just m, newcube)]
         put newcube
-        --liftIO $ putStrLn ("hello from runmoves, moves is: " ++ show moves)
         execMoves ms newcube
 
+-- prettyWriter turns writer into a nice log
+prettyWriter :: [(Maybe Move, Cube)] -> String
+prettyWriter []                = []
+prettyWriter ((Nothing, c):xs) = "Start game:\n" ++ show c ++ prettyWriter xs
+prettyWriter ((Just m, c):xs)  = "Move " ++ show m ++ "\n" ++ show c ++ prettyWriter xs
 
 -- main to handle option parameters:
 --  - interactive (batch mode?)
@@ -139,11 +143,12 @@ main = do
     --print cubeParams
     --print moveParams
     --print logFile
-    (s, w) <- case mode of
+    (_, w) <- case mode of
                 Batch       -> execRWST startBatchGame moveParams cubeParams
                 Interactive -> execRWST startInteractiveGame [] cubeParams
-    print s
-    print w
+    writeFile logFile (prettyWriter w)
+    --print s
+    --print w
 
 
 
