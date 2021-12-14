@@ -8,8 +8,6 @@ https://github.com/KitN/rubiks-two-two
 
 ## TODO LIST
 
-6 - create a randomized cube
-
 7 - create the solver algorithm to solve the cube
 
 8 - create test cases to test the code
@@ -32,6 +30,10 @@ https://github.com/KitN/rubiks-two-two
 4 - Fix the Writer to record both moves and the cube. 
 
 5 - Fix the output to the log, so that it prints everything nicely. For both batch and interactive, always print to log.
+
+5 - change the parse to readMaybe for cube and move
+
+6 - create a randomized cube
 
 ## Requirements
 Allows users to enter in a current cube configuration

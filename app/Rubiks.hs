@@ -8,7 +8,8 @@ import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell)
 import Control.Monad.Trans
 import Control.Monad (void)
 import Data.Maybe (isJust)
-
+import System.Random.Stateful (newStdGen)
+import Control.Monad.State (evalState)
 
 
 -- CubeGame is a type synonym to RWST where
@@ -39,9 +40,14 @@ startInteractiveGame = do
     liftIO $ putStrLn "    4 - Use cube passed in from parameters"
     i <- liftIO getStartingInput
     case i of
-        '1' -> liftIO (putStrLn "\nStarting game with randomized cube") >> put randomCube
-        '2' -> liftIO (putStrLn "") >> liftIO enterInteractiveCube >>= put
-        '3' -> liftIO (putStrLn "\nStarting game with a solved cube") >> put initCube 
+        '1' -> liftIO (putStrLn "\nStarting game with randomized cube") >> 
+               liftIO newStdGen >>= 
+               put . evalState randomCube -- get random generator and pass it to evalState of randomCube to get a Cube
+        '2' -> liftIO (putStrLn "") >>
+               liftIO enterInteractiveCube >>=
+               put
+        '3' -> liftIO (putStrLn "\nStarting game with a solved cube") >>
+               put initCube 
         _   -> void $ liftIO (putStrLn "\nStarting game with cube from parameters") -- can only be '4' but using _ as catch all
     curCube <- get
     tell [(Nothing, curCube)] -- write the first initial cube to writer

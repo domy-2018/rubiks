@@ -1,7 +1,11 @@
 
 module Cube where
 
-import qualified Moves   as M
+import qualified Moves     as M
+import           Text.Read      (readMaybe)
+import           Data.List      (foldl')
+import           System.Random.Stateful
+import           Control.Monad.State (State)
 
 -- W = White
 -- Y = Yellow
@@ -51,9 +55,9 @@ instance Show Cube where
 
 -- parse Colour
 parseColour :: String -> Maybe Colour
-parseColour c
-    | c `elem` ["W", "Y", "R", "O", "B", "G"] = Just $ read c
-    | otherwise                               = Nothing
+parseColour = readMaybe
+--    | c `elem` ["W", "Y", "R", "O", "B", "G"] = Just $ read c
+--    | otherwise                               = Nothing
 
 -- parse corner
 parseCorner :: String -> Maybe (Colour, Colour, Colour)
@@ -72,10 +76,15 @@ initCube = Cube { flu = (W, B, R)
                 , bld = (Y, B, O)
                 , brd = (Y, G, O) }
 
--- create a random cube
-randomCube :: Cube
-randomCube = undefined
+-- create a random cube by applying 50 random Moves on a solved Cube
+randomCube :: State StdGen Cube
+randomCube = do
+    movelist <- M.randomMoveList 50
+    return $ rotateMovesCube movelist initCube
 
+
+rotateMovesCube :: [M.Move] -> Cube -> Cube
+rotateMovesCube ms c = foldl' (flip rotateCube) c ms
 
 -- rotates Cube given move
 rotateCube :: M.Move -> Cube -> Cube
