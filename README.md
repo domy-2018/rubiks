@@ -16,6 +16,8 @@ https://github.com/KitN/rubiks-two-two
 
 10 - documentation
 
+11 - Use Text instead of String (optional?)
+
 ## Completed TODO
 
 1 - with the params passed in, if batch, run batch game. if interactive, prompt if player wants to start initial cube

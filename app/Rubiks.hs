@@ -4,13 +4,14 @@
 import Params
 import Cube
 import Moves
+import Solve
 import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell)
 import Control.Monad.Trans
 import Control.Monad (void)
-import Data.Maybe (isJust)
+import Data.Maybe (isJust, fromJust)
 import System.Random.Stateful (newStdGen)
 import Control.Monad.State (evalState)
-
+import GHC.Base (failIO)
 
 -- CubeGame is a type synonym to RWST where
 -- Reader - [Move] is the list of moves to be made
@@ -93,25 +94,29 @@ interactiveGame = do
     liftIO $ print curCube
     moves   <- liftIO getInteractiveInput
     case moves of
-        Nothing -> liftIO $ putStrLn "Thank you for playing"
-        Just ms -> local (const ms) runMoves >>
-                   interactiveGame
+        Left 'q' -> liftIO $ putStrLn "Thank you for playing"
+        Left 's' -> local (const $ solveCube curCube) runMoves >> -- TBC needs to tidy up the user feedback here
+                    interactiveGame
+        Right ms -> local (const ms) runMoves >>
+                    interactiveGame
+        Left _   -> liftIO $ failIO "Something has gone terribly wrong." -- should never reach here
   where
     -- get the input from player
-    getInteractiveInput :: IO (Maybe [Move])
+    getInteractiveInput :: IO (Either Char [Move])
     getInteractiveInput = do
-        putStrLn "Make a move: F R U B L D, q to quit"
+        putStrLn "Make a move: F R U B L D, s to auto solve, q to quit"
         input <- parseInput <$> getLine
         case input of
-            Just [] -> putStrLn "Invalid move. Please try again" >> getInteractiveInput
-            _       -> return input
+            Right [] -> putStrLn "Invalid move. Please try again" >> getInteractiveInput
+            _        -> return input
 
-    -- parses String to a [Move]. If "q" return Nothing, if invalid move, return empty list
-    parseInput :: String -> Maybe [Move]
+    -- parses String to a Either String [Move]. If "q" or "s" return Left, if invalid move, return empty list
+    parseInput :: String -> Either Char [Move]
     parseInput i
-        | i == "q"             = Nothing
-        | isJust maybeMoveList = maybeMoveList
-        | otherwise            = Just []
+        | i == "q"             = Left 'q'
+        | i == "s"             = Left 's'
+        | isJust maybeMoveList = Right $ fromJust maybeMoveList
+        | otherwise            = Right []
       where
         maybeMoveList = parseMoves i
 

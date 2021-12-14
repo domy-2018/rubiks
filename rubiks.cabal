@@ -30,6 +30,7 @@ executable rubiks
         Params
         Cube
         Moves
+        Solve
     hs-source-dirs: 
         app
         src

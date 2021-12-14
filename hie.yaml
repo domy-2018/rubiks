@@ -15,6 +15,9 @@ cradle:
     - path: "app/Moves.hs"
       component: "rubiks:exe:rubiks"
 
+    - path: "app/Solve.hs"
+      component: "rubiks:exe:rubiks"
+
     - path: "src/Params.hs"
       component: "rubiks:exe:rubiks"
 
@@ -22,4 +25,7 @@ cradle:
       component: "rubiks:exe:rubiks"
 
     - path: "src/Moves.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/Solve.hs"
       component: "rubiks:exe:rubiks"
