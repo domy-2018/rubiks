@@ -3,7 +3,7 @@ module Cube where
 
 import qualified Moves     as M
 import           Text.Read      (readMaybe)
-import           Data.List      (foldl')
+import           Data.List      (foldl', nub)
 import           System.Random.Stateful
 import           Control.Monad.State (State)
 
@@ -14,7 +14,7 @@ import           Control.Monad.State (State)
 -- B = Blue
 -- G = Green
 data Colour = W | Y | R | O | B | G
-    deriving (Show, Read)
+    deriving (Show, Read, Eq)
 
 -- A 2x2 Rubiks cube consists of 8 corners.
 -- This is represented by a record syntax of 8 triples of colours
@@ -36,6 +36,7 @@ data Cube = Cube { flu :: (Colour, Colour, Colour)
                  , brd :: (Colour, Colour, Colour) }
     deriving Read
 
+
 instance Show Cube where
     show Cube {flu = (f_flu, l_flu, u_flu), 
                fru = (f_fru, r_fru, u_fru),
@@ -49,7 +50,7 @@ instance Show Cube where
         "|" ++ show l_blu ++ "|" ++ show l_flu ++ "|" ++ show f_flu ++ "|" ++ show f_fru ++ "|" ++ show r_fru ++ "|" ++ show r_bru ++ "|" ++ show b_bru ++ "|" ++ show b_blu ++ "|\n" ++
         "|" ++ show l_bld ++ "|" ++ show l_fld ++ "|" ++ show f_fld ++ "|" ++ show f_frd ++ "|" ++ show r_frd ++ "|" ++ show r_brd ++ "|" ++ show b_brd ++ "|" ++ show b_bld ++ "|\n" ++
                                               "    |" ++ show d_fld ++ "|" ++ show d_frd ++ "|\n" ++
-                                              "    |" ++ show d_bld ++ "|" ++ show d_brd ++ "|\n"
+                                              "    |" ++ show d_bld ++ "|" ++ show d_brd ++ "|\n" 
 
 
 
@@ -58,6 +59,17 @@ parseColour :: String -> Maybe Colour
 parseColour = readMaybe
 --    | c `elem` ["W", "Y", "R", "O", "B", "G"] = Just $ read c
 --    | otherwise                               = Nothing
+
+
+-- give the opposite colour
+oppositeColour :: Colour -> Colour
+oppositeColour c = case c of
+                       W -> Y
+                       Y -> W
+                       B -> G
+                       G -> B
+                       R -> O
+                       O -> R
 
 -- parse corner
 parseCorner :: String -> Maybe (Colour, Colour, Colour)
@@ -161,7 +173,23 @@ rotateCube M.B2 c = rotateCube M.B $ rotateCube M.B c
 rotateCube M.D2 c = rotateCube M.D $ rotateCube M.D c
 
 
-
+-- given a cube, checks to see if it is in a solved state or not
+-- cube is solved if all the faces have the same colour, and each face has a different colour
+isItSolved :: Cube -> Bool
+isItSolved Cube {flu = (f_flu, l_flu, u_flu),
+                 fru = (f_fru, r_fru, u_fru),
+                 fld = (f_fld, l_fld, d_fld),
+                 frd = (f_frd, r_frd, d_frd),
+                 blu = (b_blu, l_blu, u_blu),
+                 bru = (b_bru, r_bru, u_bru),
+                 bld = (b_bld, l_bld, d_bld),
+                 brd = (b_brd, r_brd, d_brd)} = [f_fru, f_fld, f_frd] == [f_flu, f_flu, f_flu] &&
+                                                [b_bru, b_bld, b_brd] == [b_blu, b_blu, b_blu] &&
+                                                [l_flu, l_fld, l_blu] == [l_bld, l_bld, l_bld] &&
+                                                [r_fru, r_frd, r_bru] == [r_brd, r_brd, r_brd] &&
+                                                [u_flu, u_fru, u_blu] == [u_bru, u_bru, u_bru] &&
+                                                [d_fld, d_frd, d_bld] == [d_brd, d_brd, d_brd] &&
+                                                nub [f_flu, b_blu, l_bld, r_brd, u_bru, d_brd] == [f_flu, b_blu, l_bld, r_brd, u_bru, d_brd]
 
 
 

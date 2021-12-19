@@ -10,10 +10,10 @@ import GHC.Generics (Generic)
 import Control.Monad.State (State, state)
 import Control.Monad (replicateM)
 
-data Move = F  | U  | L  | R  | B  | D  |
-            F' | U' | L' | R' | B' | D' |
-            F2 | U2 | L2 | R2 | B2 | D2
-    deriving (Show, Read, Eq, Generic, Uniform)
+data Move = F  | U  | R  | F' | U' | R' |
+            B  | L  | D  | B' | L' | D' |
+            F2 | U2 | R2 | B2 | L2 | D2
+    deriving (Show, Read, Eq, Generic, Uniform, Enum)
 
 -- using State to generate a random Move
 randomMove :: State StdGen Move

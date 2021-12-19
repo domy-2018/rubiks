@@ -13,6 +13,9 @@ import System.Random.Stateful (newStdGen)
 import Control.Monad.State (evalState)
 import GHC.Base (failIO)
 
+import BeginnerAlgorithm
+
+
 -- CubeGame is a type synonym to RWST where
 -- Reader - [Move] is the list of moves to be made
 -- Writer - [(Maybe Move, Cube)] list of Cube state transitions for each move, first Move is Nothing
@@ -163,6 +166,24 @@ main = do
 
 
 
+
+
+-- this is just to test my beginner algorithm with the random cube
+
+main' :: IO ()
+main' = do
+  r <- newStdGen
+  let c = evalState randomCube r
+  print c
+  putStrLn "Running solve Bottom Layer"
+  let c2 = solveBottomLayer c
+  print c2
+  putStrLn "Repositioning top layer"
+  let c3 = repositionTopPieces c2
+  print c3
+  putStrLn "Running solve Last Layer"
+  let solvedc = solveLastLayer c3
+  print solvedc
 
 
 

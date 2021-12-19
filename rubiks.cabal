@@ -31,6 +31,8 @@ executable rubiks
         Cube
         Moves
         Solve
+        BruteForceAlgorithm
+        BeginnerAlgorithm
     hs-source-dirs: 
         app
         src
@@ -42,4 +44,5 @@ executable rubiks
                     , containers ^>=0.6.5.0
                     , optparse-applicative ^>=0.16.1.0
                     , random ^>=1.2.1
+                    , digits ^>=0.3.1
     default-language: Haskell2010

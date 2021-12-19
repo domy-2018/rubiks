@@ -18,6 +18,12 @@ cradle:
     - path: "app/Solve.hs"
       component: "rubiks:exe:rubiks"
 
+    - path: "app/BruteForceAlgorithm.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "app/BeginnerAlgorithm.hs"
+      component: "rubiks:exe:rubiks"
+
     - path: "src/Params.hs"
       component: "rubiks:exe:rubiks"
 
@@ -28,4 +34,10 @@ cradle:
       component: "rubiks:exe:rubiks"
 
     - path: "src/Solve.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/BruteForceAlgorithm.hs"
+      component: "rubiks:exe:rubiks"
+
+    - path: "src/BeginnerAlgorithm.hs"
       component: "rubiks:exe:rubiks"
