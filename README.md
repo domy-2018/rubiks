@@ -6,6 +6,8 @@ Author : Sean
 Credit to solver algorithm based on code here:
 https://github.com/KitN/rubiks-two-two
 
+https://jperm.net/2x2
+
 ## TODO LIST
 
 7 - create the solver algorithm to solve the cube

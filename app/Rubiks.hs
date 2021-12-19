@@ -5,7 +5,7 @@ import Params
 import Cube
 import Moves
 import Solve
-import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell)
+import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell, execRWS)
 import Control.Monad.Trans
 import Control.Monad (void)
 import Data.Maybe (isJust, fromJust)
@@ -176,14 +176,24 @@ main' = do
   let c = evalState randomCube r
   print c
   putStrLn "Running solve Bottom Layer"
-  let c2 = solveBottomLayer c
-  print c2
+  let (s, w) = execRWS step1solveBottomLayer c c
+  --let c2 = solveBottomLayer c
+  print w
+  print s
   putStrLn "Repositioning top layer"
-  let c3 = repositionTopPieces c2
-  print c3
+  let (s1, w1) = execRWS step2repositionTopPieces s s
+  -- let c3 = repositionTopPieces s
+  print w1
+  print s1
   putStrLn "Running solve Last Layer"
-  let solvedc = solveLastLayer c3
-  print solvedc
+  let (s2, w2) = execRWS step3solveLastLayer s1 s1
+  --let solvedc = solveLastLayer s1 
+  print w2
+  print s2
+  putStrLn "Running Beginner Solver"
+  let (s3, w3) = execRWS beginnerSolve c c
+  print w3
+  print s3
 
 
 
