@@ -4,7 +4,6 @@
 import Params
 import Cube
 import Moves
-import Solve
 import Control.Monad.RWS.Strict (execRWST, RWST, local, ask, get, put, tell, execRWS)
 import Control.Monad.Trans
 import Control.Monad (void)
@@ -20,7 +19,7 @@ import BeginnerAlgorithm
 -- Reader - [Move] is the list of moves to be made
 -- Writer - [(Maybe Move, Cube)] list of Cube state transitions for each move, first Move is Nothing
 -- State  - Cube current state of the cube
-type CubeGame = RWST [Move] [(Maybe Move, Cube)] Cube IO
+type CubeGame = RWST [Move] [(Maybe [Move], Cube)] Cube IO
 
 
 -- kicks off the batch game
@@ -98,8 +97,27 @@ interactiveGame = do
     moves   <- liftIO getInteractiveInput
     case moves of
         Left 'q' -> liftIO $ putStrLn "Thank you for playing"
-        Left 's' -> local (const $ solveCube curCube) runMoves >> -- TBC needs to tidy up the user feedback here
-                    interactiveGame
+        Left 's' -> do
+                        liftIO $ putStrLn "Solving the Cube with the Beginner Algorithm"
+                        liftIO $ putStrLn "--------------------------------------------"
+                        liftIO $ putStrLn "Step 1 - Solving the Bottom Layer"
+                        let (_, w1) = execRWS step1solveBottomLayer curCube curCube
+                        liftIO $ putStrLn (prettyMoveListWriter w1)
+                        local (const w1) runMoves
+                        s1 <- get
+                        liftIO $ print s1
+                        liftIO $ putStrLn "Step 2 - Repositioning Top Corners"
+                        let (_, w2) = execRWS step2repositionTopPieces s1 s1
+                        liftIO $ putStrLn (prettyMoveListWriter w2)
+                        local (const w2) runMoves
+                        s2 <- get
+                        liftIO $ print s2
+                        liftIO $ putStrLn "Step 3 - Solving Last Layer"
+                        let (_, w3) = execRWS step3solveLastLayer s2 s2
+                        liftIO $ putStrLn (prettyMoveListWriter w3)
+                        local (const w3) runMoves
+                        interactiveGame
+        Left 'r' -> startInteractiveGame
         Right ms -> local (const ms) runMoves >>
                     interactiveGame
         Left _   -> liftIO $ failIO "Something has gone terribly wrong." -- should never reach here
@@ -107,7 +125,7 @@ interactiveGame = do
     -- get the input from player
     getInteractiveInput :: IO (Either Char [Move])
     getInteractiveInput = do
-        putStrLn "Make a move: F R U B L D, s to auto solve, q to quit"
+        putStrLn "Make a move: F R U B L D, s to auto solve, r to restart, q to quit"
         input <- parseInput <$> getLine
         case input of
             Right [] -> putStrLn "Invalid move. Please try again" >> getInteractiveInput
@@ -118,6 +136,7 @@ interactiveGame = do
     parseInput i
         | i == "q"             = Left 'q'
         | i == "s"             = Left 's'
+        | i == "r"             = Left 'r'
         | isJust maybeMoveList = Right $ fromJust maybeMoveList
         | otherwise            = Right []
       where
@@ -130,21 +149,21 @@ runMoves :: CubeGame ()
 runMoves = do
     moveList  <- ask
     cubeState <- get
-    execMoves moveList cubeState
-  where
-    execMoves :: [Move] -> Cube -> CubeGame ()
-    execMoves [] _      = return ()
-    execMoves (m:ms) cs = do
-        let newcube = rotateCube m cs
-        tell [(Just m, newcube)]
-        put newcube
-        execMoves ms newcube
+    let newcube = rotateMovesCube moveList cubeState
+    tell [(Just moveList, newcube)]
+    put newcube
 
 -- prettyWriter turns writer into a nice log
-prettyWriter :: [(Maybe Move, Cube)] -> String
+prettyWriter :: [(Maybe [Move], Cube)] -> String
 prettyWriter []                = []
 prettyWriter ((Nothing, c):xs) = "Start game:\n" ++ show c ++ prettyWriter xs
-prettyWriter ((Just m, c):xs)  = "Move " ++ show m ++ "\n" ++ show c ++ prettyWriter xs
+prettyWriter ((Just ms, c):xs)  = "Move: " ++ prettyMoveListWriter ms ++ "\n" ++ show c ++ prettyWriter xs
+
+-- Given a list of Move, turns it into space separated Move String
+prettyMoveListWriter :: [Move] -> String
+prettyMoveListWriter [] = ""
+prettyMoveListWriter (m:ms) = show m ++ " " ++ prettyMoveListWriter ms
+
 
 -- main to handle option parameters:
 --  - interactive (batch mode?)
@@ -169,7 +188,7 @@ main = do
 
 
 -- this is just to test my beginner algorithm with the random cube
-
+{-
 main' :: IO ()
 main' = do
   r <- newStdGen
@@ -195,6 +214,6 @@ main' = do
   print w3
   print s3
 
-
+-}
 
 

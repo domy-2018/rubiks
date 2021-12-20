@@ -10,11 +10,9 @@ https://jperm.net/2x2
 
 ## TODO LIST
 
-7 - create the solver algorithm to solve the cube
-
 8 - create test cases to test the code
 
-9 - benchmark to benchmark solving the cube ?
+9 - benchmark to benchmark solving the cube (optional?)
 
 10 - documentation
 
@@ -38,6 +36,8 @@ https://jperm.net/2x2
 5 - change the parse to readMaybe for cube and move
 
 6 - create a randomized cube
+
+7 - create the solver algorithm to solve the cube
 
 ## Requirements
 Allows users to enter in a current cube configuration
