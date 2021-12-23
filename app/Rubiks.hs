@@ -43,13 +43,13 @@ startInteractiveGame = do
     liftIO $ putStrLn "    4 - Use cube passed in from parameters"
     i <- liftIO getStartingInput
     case i of
-        '1' -> liftIO (putStrLn "\nStarting game with randomized cube") >> 
+        "1" -> liftIO (putStrLn "\nStarting game with randomized cube") >> 
                liftIO newStdGen >>= 
                put . evalState randomCube -- get random generator and pass it to evalState of randomCube to get a Cube
-        '2' -> liftIO (putStrLn "") >>
+        "2" -> liftIO (putStrLn "") >>
                liftIO enterInteractiveCube >>=
                put
-        '3' -> liftIO (putStrLn "\nStarting game with a solved cube") >>
+        "3" -> liftIO (putStrLn "\nStarting game with a solved cube") >>
                put initCube 
         _   -> void $ liftIO (putStrLn "\nStarting game with cube from parameters") -- can only be '4' but using _ as catch all
     curCube <- get
@@ -57,10 +57,10 @@ startInteractiveGame = do
     interactiveGame -- then starts the interactive game
 
   where
-    getStartingInput :: IO Char
+    getStartingInput :: IO String
     getStartingInput = do
-        i <- getChar
-        if i `elem` ['1', '2', '3', '4'] then
+        i <- getLine
+        if i `elem` ["1", "2", "3", "4"] then
             return i
         else
             putStrLn "  --> Invalid input. Valid options are 1, 2, 3, 4. Please try again." >> getStartingInput
