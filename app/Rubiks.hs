@@ -1,5 +1,5 @@
-{-# LANGUAGE RecordWildCards #-}
-
+{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import Params
 import Cube
@@ -11,8 +11,10 @@ import Data.Maybe (isJust, fromJust)
 import System.Random.Stateful (newStdGen)
 import Control.Monad.State (evalState)
 import GHC.Base (failIO)
-
 import BeginnerAlgorithm
+import Data.Text (Text)
+import qualified Data.Text.IO as TIO
+import qualified Data.Text    as T
 
 
 -- CubeGame is a type synonym to RWST where
@@ -102,19 +104,19 @@ interactiveGame = do
                         liftIO $ putStrLn "--------------------------------------------"
                         liftIO $ putStrLn "Step 1 - Solving the Bottom Layer"
                         let (_, w1) = execRWS step1solveBottomLayer curCube curCube
-                        liftIO $ putStrLn (prettyMoveListWriter w1)
+                        liftIO $ TIO.putStrLn (prettyMoveListWriter w1)
                         local (const w1) runMoves
                         s1 <- get
                         liftIO $ print s1
                         liftIO $ putStrLn "Step 2 - Repositioning Top Corners"
                         let (_, w2) = execRWS step2repositionTopPieces s1 s1
-                        liftIO $ putStrLn (prettyMoveListWriter w2)
+                        liftIO $ TIO.putStrLn (prettyMoveListWriter w2)
                         local (const w2) runMoves
                         s2 <- get
                         liftIO $ print s2
                         liftIO $ putStrLn "Step 3 - Solving Last Layer"
                         let (_, w3) = execRWS step3solveLastLayer s2 s2
-                        liftIO $ putStrLn (prettyMoveListWriter w3)
+                        liftIO $ TIO.putStrLn (prettyMoveListWriter w3)
                         local (const w3) runMoves
                         interactiveGame
         Left 'r' -> startInteractiveGame
@@ -154,15 +156,18 @@ runMoves = do
     put newcube
 
 -- prettyWriter turns writer into a nice log
-prettyWriter :: [(Maybe [Move], Cube)] -> String
-prettyWriter []                = []
-prettyWriter ((Nothing, c):xs) = "Start game:\n" ++ show c ++ prettyWriter xs
-prettyWriter ((Just ms, c):xs)  = "Move: " ++ prettyMoveListWriter ms ++ "\n" ++ show c ++ prettyWriter xs
+prettyWriter :: [(Maybe [Move], Cube)] -> Text
+prettyWriter []                = T.empty
+prettyWriter ((Nothing, c):xs) = "Start game:\n" `T.append` T.pack (show c) `T.append` prettyWriter xs
+prettyWriter ((Just ms, c):xs) = "Move: " `T.append` prettyMoveListWriter ms `T.append` "\n" `T.append` T.pack (show c) `T.append` prettyWriter xs
 
 -- Given a list of Move, turns it into space separated Move String
-prettyMoveListWriter :: [Move] -> String
-prettyMoveListWriter [] = ""
-prettyMoveListWriter (m:ms) = show m ++ " " ++ prettyMoveListWriter ms
+--prettyMoveListWriter :: [Move] -> Text
+--prettyMoveListWriter [] = ""
+--prettyMoveListWriter (m:ms) = T.pack (show m) `T.append` " " `T.append` prettyMoveListWriter ms
+
+prettyMoveListWriter :: [Move] -> Text
+prettyMoveListWriter = foldr (\m -> T.append (T.pack (show m) `T.append` " ")) T.empty
 
 
 -- main to handle option parameters:
@@ -179,7 +184,7 @@ main = do
     (_, w) <- case mode of
                 Batch       -> execRWST startBatchGame moveParams cubeParams
                 Interactive -> execRWST startInteractiveGame [] cubeParams
-    writeFile logFile (prettyWriter w)
+    TIO.writeFile logFile (prettyWriter w)
     --print s
     --print w
 

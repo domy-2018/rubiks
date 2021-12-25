@@ -52,6 +52,7 @@ executable rubiks
                     , optparse-applicative ^>=0.16.1.0
                     , random ^>=1.2.1
                     , rubiks2x2
+                    , text ^>=2.0
     default-language: Haskell2010
 
 

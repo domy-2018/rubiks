@@ -12,8 +12,6 @@ https://jperm.net/2x2
 
 10 - documentation
 
-11 - Use Text instead of String (optional?)
-
 ## Completed TODO
 
 1 - with the params passed in, if batch, run batch game. if interactive, prompt if player wants to start initial cube
@@ -38,6 +36,8 @@ https://jperm.net/2x2
 8 - create test cases to test the code
 
 (CANCELLED) 9 - benchmark to benchmark solving the cube (optional?)
+
+11 - Use Text instead of String (optional?)
 
 ## Requirements
 Allows users to enter in a current cube configuration
