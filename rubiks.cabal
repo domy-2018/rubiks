@@ -1,12 +1,9 @@
-cabal-version:      2.4
-name:               rubiks
-version:            0.1.0.0
+cabal-version: 2.4
+name:          rubiks
+version:       0.1.0.0
 
--- A short (one-line) description of the package.
--- synopsis:
-
--- A longer description of the package.
--- description:
+synopsis:      A 2x2 rubiks cube game
+description:   A haskel implementation of the 2x2 rubiks cube game
 
 -- A URL where users can report bugs.
 -- bug-reports:
@@ -15,7 +12,7 @@ version:            0.1.0.0
 -- license:
 
 -- The package author(s).
--- author:
+author:        Sean Soh
 
 -- An email address to which users can send suggestions, bug reports, and patches.
 -- maintainer:
@@ -24,25 +21,58 @@ version:            0.1.0.0
 -- copyright:
 -- category:
 
-executable rubiks
-    main-is: Rubiks.hs
-    other-modules:
-        Params
+library rubiks2x2
+    exposed-modules:
         Cube
         Moves
         Solve
         BruteForceAlgorithm
         BeginnerAlgorithm
+    hs-source-dirs:
+        src
+    ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
+    build-depends:   base ^>=4.14.2.0
+                   , random ^>=1.2.1
+                   , mtl >=2.0 && <2.3
+                   , digits ^>=0.3.1
+    default-language: Haskell2010
+
+
+executable rubiks
+    main-is: Rubiks.hs
+    other-modules:
+        Params
     hs-source-dirs: 
         app
-        src
     ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.2.0
                     , mtl >=2.0 && <2.3
-                    , containers ^>=0.6.5.0
                     , optparse-applicative ^>=0.16.1.0
                     , random ^>=1.2.1
-                    , digits ^>=0.3.1
+                    , rubiks2x2
     default-language: Haskell2010
+
+
+test-suite rubiks-test
+    type: exitcode-stdio-1.0
+    main-is: RubiksTest.hs
+    other-modules:
+        CubeSpec
+        MovesSpec
+        BeginnerAlgorithmSpec
+    hs-source-dirs: test
+    ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
+    build-depends:
+        base ^>=4.14.2.0
+      , mtl >=2.0 && <2.3
+      , rubiks2x2
+      , tasty ^>=1.4.2
+      , tasty-hspec ^>=1.2
+      , hspec ^>=2.9.4
+    default-language: Haskell2010
+
+
+
+

@@ -34,7 +34,7 @@ data Cube = Cube { flu :: (Colour, Colour, Colour)
                  , bru :: (Colour, Colour, Colour)
                  , bld :: (Colour, Colour, Colour)
                  , brd :: (Colour, Colour, Colour) }
-    deriving Read
+    deriving (Eq, Read)
 
 
 instance Show Cube where

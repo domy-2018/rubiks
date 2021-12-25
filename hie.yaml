@@ -1,43 +1,13 @@
 cradle:
   cabal:
-    - path: "app/Rubiks.hs"
-      component: "rubiks:exe:rubiks"
+    - path: "src"
+      component: "rubiks:lib:rubiks2x2"
 
-    - path: "src/Rubiks.hs"
+    - path: "app/Rubiks.hs"
       component: "rubiks:exe:rubiks"
 
     - path: "app/Params.hs"
       component: "rubiks:exe:rubiks"
 
-    - path: "app/Cube.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "app/Moves.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "app/Solve.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "app/BruteForceAlgorithm.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "app/BeginnerAlgorithm.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/Params.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/Cube.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/Moves.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/Solve.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/BruteForceAlgorithm.hs"
-      component: "rubiks:exe:rubiks"
-
-    - path: "src/BeginnerAlgorithm.hs"
-      component: "rubiks:exe:rubiks"
+    - path: "test"
+      component: "rubiks:test:rubiks-test"

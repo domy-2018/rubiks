@@ -10,10 +10,6 @@ https://jperm.net/2x2
 
 ## TODO LIST
 
-8 - create test cases to test the code
-
-9 - benchmark to benchmark solving the cube (optional?)
-
 10 - documentation
 
 11 - Use Text instead of String (optional?)
@@ -38,6 +34,10 @@ https://jperm.net/2x2
 6 - create a randomized cube
 
 7 - create the solver algorithm to solve the cube
+
+8 - create test cases to test the code
+
+(CANCELLED) 9 - benchmark to benchmark solving the cube (optional?)
 
 ## Requirements
 Allows users to enter in a current cube configuration
