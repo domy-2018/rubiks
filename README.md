@@ -4,8 +4,8 @@ An interactive Haskell implementation of the 2x2 Rubiks cube
 Author : Sean 
 
 Credit to solver algorithm based on code here:
-https://github.com/KitN/rubiks-two-two
-https://jperm.net/2x2
+ - Brute force  algorithm: https://github.com/KitN/rubiks-two-two
+ - Beginner algorithm: https://jperm.net/2x2
 
 
 ## Overview
