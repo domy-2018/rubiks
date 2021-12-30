@@ -1,33 +1,38 @@
-# rubiks
+# 2x2 rubiks
 An interactive Haskell implementation of the 2x2 Rubiks cube.
 
 This project was developed as part of the Emurgo Blockchain developer course.
 
 Author : Sean 
 
-Credit to solver algorithm based on code here:
+Credit to solver algorithm, code is based on the following:
  - Brute force  algorithm: https://github.com/KitN/rubiks-two-two
  - Beginner algorithm: https://jperm.net/2x2
 
 
 ## Overview
-Allows users to enter in a current cube configuration
-    - Maybe also a "quick check" to ensure correct colour orientation, like white opposite yellow, and correct number of edges and corners in the right colours
-If you provide a current cube configuration and choose interactive, it will allow you to interactively solve it
-    - This will allow you to enter in a move, and then it will print the outcome of the move
-Randomize function will start off with a randomized cube, if you don't want to provide initial cube input
-    - Randomize by starting from a solved state, then calling a randomize function to provide string of random moves. Then apply those moves.
-Option to log the solution to a file
+Allows player to interactively play with a 2x2 rubiks cube displayed in a 2D manner. Player can also choose to enter a batch mode by passing in the -b flag as parameter. By default, game starts interactively.
+
+When you start the game, you can then choose to start with a randomized cube, interactively enter in a starting cube position, start with a solved cube, or start with the cube passed in from the parameters.
+
+Example screenshot below, shows the game started interactively and with a randomized cube:
+
+![Interactive start with randomized cube](./img/interactive_start.png)
 
 
-## Aspirational Goals
-Validate cube configuration
-    - Will it be possible for me to validate the cube configuration? To ensure what is entered is solvable
-    - This website provides some info: 
-      https://www.quora.com/Is-it-possible-to-determine-whether-a-Rubiks-Cube-is-solvable-just-by-looking-at-its-scrambled-state
-If you provide a current cube configuration and the input to solve, then it will solve it for you
-    - it will first check to see if it is solvable
-    - then solve it and provide the sequence of steps and each of the outcome of the steps
+
+## Help
+Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]
+  2x2 Rubiks cube game
+
+Available options:
+  -b,--batch               Enable batch mode
+  -c,--cube ARG            Enter initial cube state for batch mode
+  -m,--moves ARG           Enter move list for batch mode
+  -l,--log LOGFILE         Write rubiks moves history to LOGFILE
+  -h,--help                Show this help text
+
+
 
 ## Design
 Using Reader Writer State monads (RWS monad)
@@ -74,6 +79,15 @@ Solver algorithm:
 randomize the cube and then run solve.
 
 
+
+## Future Development Goals
+Validate cube configuration
+    - Will it be possible for me to validate the cube configuration? To ensure what is entered is solvable
+    - This website provides some info: 
+      https://www.quora.com/Is-it-possible-to-determine-whether-a-Rubiks-Cube-is-solvable-just-by-looking-at-its-scrambled-state
+If you provide a current cube configuration and the input to solve, then it will solve it for you
+    - it will first check to see if it is solvable
+    - then solve it and provide the sequence of steps and each of the outcome of the steps
 
 
 
