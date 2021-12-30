@@ -15,9 +15,11 @@ Allows player to interactively play with a 2x2 rubiks cube displayed in a 2D man
 
 When you start the game, you can then choose to start with a randomized cube, interactively enter in a starting cube position, start with a solved cube, or start with the cube passed in from the parameters.
 
-Example screenshot below, shows the game started interactively and with a randomized cube:
+Example screenshot below shows the game started interactively and with a randomized cube:
 
 ![Interactive start with randomized cube](./img/interactive_start.png)
+
+The log of all the moves and its intermediate states are then logged to a log file, the default filename is rubiks.txt
 
 ### Cube representation
 In the interactive mode, the cube is displayed in a 2D manner, the different faces of the cube are represented in the following layout:
@@ -41,10 +43,12 @@ data Move = F  | U  | R  | F' | U' | R' |
             F2 | U2 | R2 | B2 | L2 | D2
 ```
 
-F - rotates the front face 90° clockwise. The ' is to indicate anti-clockwise rotation. The 2 is to rotate by 180°.
+F rotates the front face 90° clockwise.<br>
+The ' is to indicate anti-clockwise rotation.<br>
+The 2 is to rotate by 180°.
 
 
-## Help
+### Help
 <pre>
 Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]
   2x2 Rubiks cube game
@@ -56,6 +60,15 @@ Available options:
   -l,--log LOGFILE         Write rubiks moves history to LOGFILE
   -h,--help                Show this help text
 </pre>
+
+### Examples
+
+Start game interactively:
+```
+cabal -v0 run rubiks
+```
+
+
 
 
 ## Design
