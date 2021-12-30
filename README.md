@@ -20,21 +20,28 @@ Example screenshot below, shows the game started interactively and with a random
 ![Interactive start with randomized cube](./img/interactive_start.png)
 
 ### Cube representation
-In the interactive mode, the cube is displayed in a 2D manner, the differen faces of the are represented in the following layout:
+In the interactive mode, the cube is displayed in a 2D manner, the different faces of the cube are represented in the following layout:
 
 <pre>
-    | U |
-    |   |
-| L | F | R | B |
-|   |   |   |   |
-    | D |
-    |   |
+    | U |                U - Up face
+    |   |                L - Left face
+| L | F | R | B |        F - Front face
+|   |   |   |   |        R - Right face
+    | D |                B - Back face
+    |   |                D - Down face
 </pre>
 
-F - Front face, L - Left face, U - Up face, R - Right face, D - Down face, B - Back face
 
 ### Valid moves
+The following are the valid moves:
 
+```
+data Move = F  | U  | R  | F' | U' | R' |
+            B  | L  | D  | B' | L' | D' |
+            F2 | U2 | R2 | B2 | L2 | D2
+```
+
+F - rotates the front face 90° clockwise. The ' is to indicate anti-clockwise rotation. The 2 is to rotate by 180°.
 
 
 ## Help
