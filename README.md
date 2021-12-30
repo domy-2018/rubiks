@@ -4,7 +4,7 @@ An interactive Haskell implementation of the 2x2 Rubiks cube.
 This project was developed as part of the Emurgo Blockchain developer course.
 
 Credit to solver algorithm, code is based on the following:
- - Brute force  algorithm: https://github.com/KitN/rubiks-two-two
+ - Brute force algorithm: https://github.com/KitN/rubiks-two-two
  - Beginner algorithm: https://jperm.net/2x2
 
 
@@ -87,17 +87,17 @@ A main module to take in user parameters, and handle the IO part.
 ### Detailed Design
 
 A 2x2 cube is represented by:
-    - 8 corners
+- 8 corners
 
 The following is the list of all the corner positions:
-    - Front Left Up position (FLU)
-    - Front Right Up position (FRU)
-    - Front Left Down position (FLD)
-    - Front Right Down position (FRD)
-    - Back Left Up position (BLU)
-    - Back Right Up position (BRU)
-    - Back Left Down position (BLD)
-    - Back Right Down position (BRD)
+    - Front Left Up position (flu)
+    - Front Right Up position (fru)
+    - Front Left Down position (fld)
+    - Front Right Down position (frd)
+    - Back Left Up position (blu)
+    - Back Right Up position (bru)
+    - Back Left Down position (bld)
+    - Back Right Down position (brd)
 
 The following is the list of all the corner colours:
     - Red White Blue
