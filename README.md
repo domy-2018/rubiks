@@ -76,60 +76,55 @@ cabal -v0 run rubiks -- -h
 
 
 ## Design
-Using Reader Writer State monads (RWS monad)
-Using get options package to get the options from the user
-A module to represent the cube data type. 
-    - Represent via square, face, edge, corner?
-    - Also handles pretty printing it. Maybe using colours? System.Console.ANSI
-A module to represent the moves
-A main module to take in user parameters, and handle the IO part. 
+An RWST monad is used where Reader is: [Move], Writer is [(Maybe [Move], Cube)], State is Cube and IO is the base monad.  
+
+The optparse-applicative package is used to get options and parameters from the command line.
+
+Cube.hs - Functions and definitions relating to a cube <br>
+Moves.hs - Functions and definitions relating to rotating a cube <br>
+Solve.hs - Defines the RWS monad used for solving <br>
+BeginnerAlgorithm.hs - Code to solve the cube using the beginner method <br>
+BruteForceAlgorithm.hs - Code to solve the cube using the brute force method
 
 ### Detailed Design
 
 A 2x2 cube is represented by:
-- 8 corners
+ - 8 corners
 
 The following is the list of all the corner positions:
-    - Front Left Up position (flu)
-    - Front Right Up position (fru)
-    - Front Left Down position (fld)
-    - Front Right Down position (frd)
-    - Back Left Up position (blu)
-    - Back Right Up position (bru)
-    - Back Left Down position (bld)
-    - Back Right Down position (brd)
+ - Front Left Up position (flu)
+ - Front Right Up position (fru)
+ - Front Left Down position (fld)
+ - Front Right Down position (frd)
+ - Back Left Up position (blu)
+ - Back Right Up position (bru)
+ - Back Left Down position (bld)
+ - Back Right Down position (brd)
 
 The following is the list of all the corner colours:
-    - Red White Blue
-    - Red White Green
-    - Red Blue Yellow
-    - Red Green Yellow
-    - Orange White Blue
-    - Orange White Green
-    - Orange Green Yellow
-    - Orange Blue Yellow
+ - Red White Blue
+ - Red White Green
+ - Red Blue Yellow
+ - Red Green Yellow
+ - Orange White Blue
+ - Orange White Green
+ - Orange Green Yellow
+ - Orange Blue Yellow
 
 Solver algorithm:
-    - Brute force method.
-    - Generate all possible moves for the faces: Front, Up, Right. These moves will be: F, U, R, F', U', R'
-    - As there are 6 possible moves, and 2x2 Rubiks cube is solvable with 14 moves. The total number of possibilities are 6^14 = 78,364,164,096
-    - Once it finds the solution, log the moves to writer, and the intermediate states.  Log the time taken to find the move, and the final state. Print it out to the user.
-
+ - Beginner algorithm
+ - Brute force method. (Note this is not used anywhere in the code as it crashes prior to finding the solution when cube is sufficiently randomized)
 
 ## Testing
-randomize the cube and then run solve.
-
+To run the unit tests:
+```
+cabal -v0 run rubiks-test
+```
 
 
 ## Future Development Goals
-Validate cube configuration
-    - Will it be possible for me to validate the cube configuration? To ensure what is entered is solvable
-    - This website provides some info: 
-      https://www.quora.com/Is-it-possible-to-determine-whether-a-Rubiks-Cube-is-solvable-just-by-looking-at-its-scrambled-state
-If you provide a current cube configuration and the input to solve, then it will solve it for you
-    - it will first check to see if it is solvable
-    - then solve it and provide the sequence of steps and each of the outcome of the steps
 
-
+Some notes on future development to improve the code:
+ - Ability to validate cube configuration entered.
 
 
