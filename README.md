@@ -19,7 +19,21 @@ Example screenshot below, shows the game started interactively and with a random
 
 ![Interactive start with randomized cube](./img/interactive_start.png)
 
+### Cube representation
+In the interactive mode, the cube is displayed in a 2D manner, the differen faces of the are represented in the following layout:
 
+<pre>
+    | U |
+    |   |
+| L | F | R | B |
+|   |   |   |   |
+    | D |
+    |   |
+</pre>
+
+F - Front face, L - Left face, U - Up face, R - Right face, D - Down face, B - Back face
+
+### Valid moves
 
 
 
