@@ -21,8 +21,10 @@ Example screenshot below, shows the game started interactively and with a random
 
 
 
+
+
 ## Help
-Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]
+Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]<br>
   2x2 Rubiks cube game
 
 Available options:
