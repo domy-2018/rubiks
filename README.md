@@ -1,5 +1,7 @@
 # rubiks
-An interactive Haskell implementation of the 2x2 Rubiks cube 
+An interactive Haskell implementation of the 2x2 Rubiks cube.
+
+This project was developed as part of the Emurgo Blockchain developer course.
 
 Author : Sean 
 
