@@ -12,9 +12,3 @@ import Control.Monad.RWS.Strict
 type Solver = RWS Cube [Move] Cube ()
 
 
-solveCube :: Cube -> [Move]
-solveCube = undefined
-
-
-
-

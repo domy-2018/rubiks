@@ -1,9 +1,11 @@
-
+-- This algorithm is based on:  https://github.com/KitN/rubiks-two-two
 module BruteForceAlgorithm where
 
 import Cube
 import Moves
 import Data.Digits (digits)
+
+
 
 -- given a cube, return a list of moves that will solve it
 -- using digits convert base 10 to base 6
@@ -20,7 +22,8 @@ bruteForceSolve c
         | isItSolved $ rotateMovesCube x c = x
         | otherwise                        = runBruteForce xs cb
 
-
+-- NOTE: this algorithm only works on cubes that are almost solved.
+--       on fully randomized cubes, it will not complete, run out of memory and crash
 bruteForceMoves :: [[Move]]
 bruteForceMoves = [toEnum 0] : map (map toEnum . digits 6) [1..78364164095]
 

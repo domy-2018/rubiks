@@ -3,13 +3,13 @@ module MovesSpec where
 import Test.Hspec
 import Moves
 
-
+-- Run all moves specification tests
 movesSpecs :: Spec
 movesSpecs = describe "Moves" $ do
                  spec_parseMove
                  spec_parseMoves
 
-
+-- Tests the parseMove function
 spec_parseMove :: Spec
 spec_parseMove = describe "parseMove" $ do
                      it "parses F move"  $ parseMove "F" == Just F
@@ -31,6 +31,7 @@ spec_parseMove = describe "parseMove" $ do
                      it "parses B2 move" $ parseMove "B2" == Just B2
                      it "parses D2 move" $ parseMove "D2" == Just D2
 
+-- Tests the parseMoves function
 spec_parseMoves :: Spec
 spec_parseMoves = describe "parseMoves" $ do
                       it "parses moves" $ parseMoves "F F U L R B D D' U' B2" == Just [F, F, U, L, R, B, D, D', U', B2]

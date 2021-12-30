@@ -162,21 +162,17 @@ prettyWriter ((Nothing, c):xs) = "Start game:\n" `T.append` T.pack (show c) `T.a
 prettyWriter ((Just ms, c):xs) = "Move: " `T.append` prettyMoveListWriter ms `T.append` "\n" `T.append` T.pack (show c) `T.append` prettyWriter xs
 
 -- Given a list of Move, turns it into space separated Move String
---prettyMoveListWriter :: [Move] -> Text
---prettyMoveListWriter [] = ""
---prettyMoveListWriter (m:ms) = T.pack (show m) `T.append` " " `T.append` prettyMoveListWriter ms
-
 prettyMoveListWriter :: [Move] -> Text
 prettyMoveListWriter = foldr (\m -> T.append (T.pack (show m) `T.append` " ")) T.empty
 
 
 -- main to handle option parameters:
---  - interactive (batch mode?)
+--  - interactive by default, batch mode through flag
 --  - player to pass in initial cube state, or by default a randomized cube, option to start with solved cube
 --  - option to log to file, pass in filename if selected
 main :: IO ()
 main = do
-    Params {..} <- cmdLineParser
+    Params {..} <- cmdLineParser -- get the parameters from command line
     --print mode
     --print cubeParams
     --print moveParams
@@ -184,7 +180,7 @@ main = do
     (_, w) <- case mode of
                 Batch       -> execRWST startBatchGame moveParams cubeParams
                 Interactive -> execRWST startInteractiveGame [] cubeParams
-    TIO.writeFile logFile (prettyWriter w)
+    TIO.writeFile logFile (prettyWriter w) -- write to log file
     --print s
     --print w
 

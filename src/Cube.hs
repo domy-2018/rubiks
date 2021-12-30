@@ -57,8 +57,6 @@ instance Show Cube where
 -- parse Colour
 parseColour :: String -> Maybe Colour
 parseColour = readMaybe
---    | c `elem` ["W", "Y", "R", "O", "B", "G"] = Just $ read c
---    | otherwise                               = Nothing
 
 
 -- give the opposite colour

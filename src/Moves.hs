@@ -10,6 +10,7 @@ import GHC.Generics (Generic)
 import Control.Monad.State (State, state)
 import Control.Monad (replicateM)
 
+-- list of all acceptable moves
 data Move = F  | U  | R  | F' | U' | R' |
             B  | L  | D  | B' | L' | D' |
             F2 | U2 | R2 | B2 | L2 | D2
@@ -27,27 +28,6 @@ randomMoveList n = replicateM n randomMove
 parseMove :: String -> Maybe Move
 parseMove = readMaybe
 
-{-parseMove m
-    | m == "F"  = Just F
-    | m == "U"  = Just U
-    | m == "L"  = Just L
-    | m == "R"  = Just R
-    | m == "B"  = Just B
-    | m == "D"  = Just D
-    | m == "F'" = Just F'
-    | m == "U'" = Just U'
-    | m == "L'" = Just L'
-    | m == "R'" = Just R'
-    | m == "B'" = Just B'
-    | m == "D'" = Just D'
-    | m == "F2" = Just F2
-    | m == "U2" = Just U2
-    | m == "L2" = Just L2
-    | m == "R2" = Just R2
-    | m == "B2" = Just B2
-    | m == "D2" = Just D2
-    | otherwise = Nothing
--}
 -- parses String to Maybe list of Move
 parseMoves :: String -> Maybe [Move]
 parseMoves ms

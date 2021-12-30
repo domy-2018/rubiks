@@ -5,9 +5,13 @@ import Options.Applicative
 import Cube
 import Moves
 
+-- Two modes of running the game, interactive manner or batch
 data Mode = Interactive | Batch
     deriving Show
 
+-- The parameters which can be passed into the game.
+-- If you're running in a batch mode, you will want to pass in a cube, and the list of moves to perform
+-- Optionally you can pass in filename of logfile
 data Params = Params {
                 mode       :: Mode
               , cubeParams :: Cube
@@ -16,6 +20,10 @@ data Params = Params {
               }
     deriving Show
 
+-- flag -b turns it into batch mode, default is interactive
+-- -c to pass in a Cube
+-- -m to pass in move list
+-- -l to change log file name from default
 mkParams :: Parser Params
 mkParams = Params
            <$>
@@ -43,6 +51,7 @@ mkParams = Params
                  <> value "rubiks.txt"
                  <> help "Write rubiks moves history to LOGFILE" )
 
+-- this is used in the main routine
 cmdLineParser :: IO Params
 cmdLineParser = execParser opts
   where
@@ -50,7 +59,7 @@ cmdLineParser = execParser opts
                 (fullDesc <> progDesc "2x2 Rubiks cube game")
 
 
-
+-- using my own error message if fail to parse 
 myauto :: Read a => String -> ReadM a
 myauto err = eitherReader $ \arg -> case reads arg of
   [(r, "")] -> return r

@@ -5,6 +5,7 @@ import           Test.Hspec
 import           Cube
 import qualified Moves as M
 
+-- Run all Cube specification tests
 cubeSpecs :: Spec
 cubeSpecs = describe "Cube" $ do
                 spec_oppositeColour

@@ -1,6 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NamedFieldPuns  #-}
 
+-- This algorithm is based on: https://jperm.net/2x2
 module BeginnerAlgorithm where
 
 import Solve
@@ -16,7 +17,8 @@ beginnerSolve = do
     step3solveLastLayer
 
 
--- step three - solve the last layer
+-- STEP 3: Solve the last layer
+-- ============================
 -- firstly run F2 and B2 to re-orient the U to D and D to U. This will bring the unsolved layer to the bottom
 -- firstly check the FRD if the correct colour is at the D position. If it is, then rotate the entire cube with U' D until the D face of FRD is not the right colour
 -- if the D position is not the correct colour run the swapFRUFRD moves until the D position colour is correct
@@ -33,13 +35,6 @@ step3solveLastLayer = do
     runSolveLastLayer opsc newc
 
 
--- check what the D colour of FRD is, and find the opposite colour.
--- The opposite of this colour will be what the colour is to solve for the last Face.
---
-{-
-solveLastLayer :: Cube -> Cube
-solveLastLayer c@Cube { frd = (_, _, d_frd) } = runSolveLastLayer (oppositeColour d_frd) (rotateMovesCube [F2, B2] c)
--}
 
 
 runSolveLastLayer :: Colour -> Cube -> Solver
@@ -62,18 +57,8 @@ runSolveLastLayer cd c@Cube { frd = (_, _, d_frd) }
 
 
 
--- the Colour passed in here, is the expected colour of the face to be solved
---
-{-
-runSolveLastLayer :: Colour -> Cube -> Cube
-runSolveLastLayer cd c@Cube { frd = (_, _, d_frd) }
-    | isItSolved c         = c
-    | isDFaceCorrect cd c  = runSolveLastLayer cd (rotateCube D c)
-    | cd == d_frd          = runSolveLastLayer cd (rotateCube D c)
-    | otherwise            = runSolveLastLayer cd (recursiveStep3DFace cd c)
--}
-
-
+-- keep running recursiveStep3FRD until the entire D face is correct
+-- note: this assumes the first FRD is not in the correct position
 recursiveStep3DFace :: Colour -> Cube -> Solver
 recursiveStep3DFace cd c
     | isDFaceCorrect cd c = put c
@@ -85,16 +70,8 @@ recursiveStep3DFace cd c
                                 recursiveStep3DFace cd newc'
 
 
--- keep running recursiveStep3FRD until the entire D face is correct
--- note: this assumes the first FRD is not in the correct position
---
-{-
-recursiveStep3DFace :: Colour -> Cube -> Cube
-recursiveStep3DFace cd c
-    | isDFaceCorrect cd c = c
-    | otherwise           = recursiveStep3DFace cd $ rotateCube D (recursiveStep3FRD cd c)
--}
-
+-- keep running swapFRUFRD until the D face of FRD is correct
+-- the D face of FRD is correct when it matches the colour passed in to this function
 
 recursiveStep3FRD :: Colour -> Cube -> Solver
 recursiveStep3FRD cd c@Cube { frd = (_, _, d_frd) }
@@ -104,15 +81,6 @@ recursiveStep3FRD cd c@Cube { frd = (_, _, d_frd) }
                               let newc = swapFRUFRD c
                               recursiveStep3FRD cd newc
 
--- keep running swapFRUFRD until the D face of FRD is correct
--- the D face of FRD is correct when it matches the colour passed in to this function
---
-{-
-recursiveStep3FRD :: Colour -> Cube -> Cube
-recursiveStep3FRD cd c@Cube { frd = (_, _, d_frd) }
-    | cd == d_frd       = c
-    | otherwise         = recursiveStep3FRD cd (swapFRUFRD c)
--}
 
 -- this checks the entire D face has the correct colour opposite to U
 isDFaceCorrect :: Colour -> Cube -> Bool
@@ -124,22 +92,10 @@ isDFaceCorrect cd Cube {fld = (_, _, d_fld),
                                                d_bld == cd &&
                                                d_brd == cd
 
--- this checks the D position of the FRD has the correct colour opposite to the U
--- INCORRECT ---> I need to pass in a colour to check at the start because the upper corners will be screwed.
-{-
-isDofFRDcorrect :: Cube -> Bool
-isDofFRDcorrect Cube {fru = (_, _, u_fru),
-                      frd = (_, _, d_frd)}
-    | (u_fru == Y   && d_frd == W) || (u_fru == W && d_frd == Y)   = True
-    | (u_fru == C.B && d_frd == G) || (u_fru == G && d_frd == C.B) = True
-    | (u_fru == C.R && d_frd == O) || (u_fru == O && d_frd == C.R) = True
-    | otherwise                                                    = False
--}
 
 
-
-
--- step two - correctly position the top pieces
+-- STEP 2: - Correctly position the top pieces
+-- ===========================================
 -- firstly check that the FRU position is correct. if it is, then check the other 3 corners.
 --     - if all positions are correct, then you're done
 --     - if none of the other positions are correct, run the reposition move and then check corners again
@@ -147,8 +103,6 @@ isDofFRDcorrect Cube {fru = (_, _, u_fru),
 --     - if the BLU position is correct, and FLU, BRU position incorrect, then run reposition move and check again
 --     - if the BRU position is correct, and FLU, BLU position incorrect, then run U' to reposition BLU to FLU which is its correct position, then run U' D to re-orient the entire cube so that it is in the FRU position
 -- if FRU position is incorrect, run U then check again
---
-
 
 step2repositionTopPieces :: Solver
 step2repositionTopPieces = do
@@ -204,36 +158,6 @@ step2repositionTopPieces = do
                                                              put newc
                                                              step2repositionTopPieces
 
-{-
-repositionTopPieces :: Cube -> Cube
-repositionTopPieces c@Cube {fld = (f_fld, l_fld, _),
-                            frd = (f_frd, r_frd, _),
-                            bld = (b_bld, l_bld, _),
-                            brd = (b_brd, r_brd, _)}
-    | checkTwoColours f_frd r_frd (fru c) &&
-      checkTwoColours f_fld l_fld (flu c) &&
-      checkTwoColours l_bld b_bld (blu c) &&
-      checkTwoColours r_brd b_brd (bru c)          = c
-    | checkTwoColours f_frd r_frd (fru c)       &&
-      not (checkTwoColours f_fld l_fld (flu c)) &&
-      not (checkTwoColours l_bld b_bld (blu c)) &&
-      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces (repositionFLUBRUBLU c)
-    | checkTwoColours f_frd r_frd (fru c)       &&
-      checkTwoColours f_fld l_fld (flu c)       &&
-      not (checkTwoColours l_bld b_bld (blu c)) &&
-      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces $ repositionFLUBRUBLU (rotateMovesCube [U, U, D'] c)
-    | checkTwoColours f_frd r_frd (fru c)       &&
-      not (checkTwoColours f_fld l_fld (flu c)) &&
-      checkTwoColours l_bld b_bld (blu c)       &&
-      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces (repositionFLUBRUBLU c)
-    | checkTwoColours f_frd r_frd (fru c)       &&
-      not (checkTwoColours f_fld l_fld (flu c)) &&
-      not (checkTwoColours l_bld b_bld (blu c)) &&
-      checkTwoColours r_brd b_brd (bru c)          = repositionTopPieces $ repositionFLUBRUBLU (rotateMovesCube [U', U', D] c)
-    | otherwise                                    = repositionTopPieces (rotateCube U c)
--}
-
-
 
 -- this set of moves will move FLU BRU BLU in anticlockwise manner to reposition
 repositionFLUBRUBLU :: Cube -> Cube
@@ -242,6 +166,9 @@ repositionFLUBRUBLU = rotateMovesCube repositionFLUBRUBLUMoves
 repositionFLUBRUBLUMoves :: [Move]
 repositionFLUBRUBLUMoves = [U, M.R, U', L', U, R', U', L]
 
+
+-- STEP 1: Solve the bottom layer
+-- ==============================
 -- fix the colour on the BRD.
 -- if the colour I want is on either FRU or FRD, then run swapFRUFRD until it is in the FRD in the correct orientation
 -- if the colour I want is on U face, then rotate it to FRU and run swapFRUFRD until I get it right
@@ -264,13 +191,6 @@ step1solveBottomLayer = do
                                         tell [D]
                                         put newc
                                         step1solveBottomLayer)
-
-{-
-solveBottomLayer :: Cube -> Cube
-solveBottomLayer c
-    | isBottomLayerSolved c = c
-    | otherwise             = solveBottomLayer $ rotateCube D (solveFRD c)
--}
 
 -- checks to see if the bottom layer is solved 
 -- all down colours are the same
@@ -312,14 +232,113 @@ solveFRD = do
                                            put newc
                                            recursiveSolveFRD cr cd newc
                                        
+-- checks two colours are in a triple
+checkTwoColours :: Colour -> Colour -> (Colour, Colour, Colour) -> Bool
+checkTwoColours c1 c2 (c3, c4, c5) = c1 `elem` [c3, c4, c5] && c2 `elem` [c3, c4, c5]
+
+
+-- this swaps FRU and FRD, and swaps BLU and BRU. 
+-- FLU, FRD, FLD, BLD and BRD does not change.
+swapFRUFRD :: Cube -> Cube
+swapFRUFRD = rotateMovesCube swapFRUFRDMoves
+
+swapFRUFRDMoves :: [Move]
+swapFRUFRDMoves = [M.R, U, R', U']
+
+
+
+
+-- ########################################################
+-- Note Old code below which I used during prototype phase:
+-- ########################################################
+
+
+
+-- check what the D colour of FRD is, and find the opposite colour.
+-- The opposite of this colour will be what the colour is to solve for the last Face.
+--
+{-
+solveLastLayer :: Cube -> Cube
+solveLastLayer c@Cube { frd = (_, _, d_frd) } = runSolveLastLayer (oppositeColour d_frd) (rotateMovesCube [F2, B2] c)
+-}
+
+-- the Colour passed in here, is the expected colour of the face to be solved
+--
+{-
+runSolveLastLayer :: Colour -> Cube -> Cube
+runSolveLastLayer cd c@Cube { frd = (_, _, d_frd) }
+    | isItSolved c         = c
+    | isDFaceCorrect cd c  = runSolveLastLayer cd (rotateCube D c)
+    | cd == d_frd          = runSolveLastLayer cd (rotateCube D c)
+    | otherwise            = runSolveLastLayer cd (recursiveStep3DFace cd c)
+-}
+
+
+
+
+{-
+recursiveStep3DFace :: Colour -> Cube -> Cube
+recursiveStep3DFace cd c
+    | isDFaceCorrect cd c = c
+    | otherwise           = recursiveStep3DFace cd $ rotateCube D (recursiveStep3FRD cd c)
+-}
+
+
+
+{-
+recursiveStep3FRD :: Colour -> Cube -> Cube
+recursiveStep3FRD cd c@Cube { frd = (_, _, d_frd) }
+    | cd == d_frd       = c
+    | otherwise         = recursiveStep3FRD cd (swapFRUFRD c)
+-}
+
+
+
+{-
+repositionTopPieces :: Cube -> Cube
+repositionTopPieces c@Cube {fld = (f_fld, l_fld, _),
+                            frd = (f_frd, r_frd, _),
+                            bld = (b_bld, l_bld, _),
+                            brd = (b_brd, r_brd, _)}
+    | checkTwoColours f_frd r_frd (fru c) &&
+      checkTwoColours f_fld l_fld (flu c) &&
+      checkTwoColours l_bld b_bld (blu c) &&
+      checkTwoColours r_brd b_brd (bru c)          = c
+    | checkTwoColours f_frd r_frd (fru c)       &&
+      not (checkTwoColours f_fld l_fld (flu c)) &&
+      not (checkTwoColours l_bld b_bld (blu c)) &&
+      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces (repositionFLUBRUBLU c)
+    | checkTwoColours f_frd r_frd (fru c)       &&
+      checkTwoColours f_fld l_fld (flu c)       &&
+      not (checkTwoColours l_bld b_bld (blu c)) &&
+      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces $ repositionFLUBRUBLU (rotateMovesCube [U, U, D'] c)
+    | checkTwoColours f_frd r_frd (fru c)       &&
+      not (checkTwoColours f_fld l_fld (flu c)) &&
+      checkTwoColours l_bld b_bld (blu c)       &&
+      not (checkTwoColours r_brd b_brd (bru c))    = repositionTopPieces (repositionFLUBRUBLU c)
+    | checkTwoColours f_frd r_frd (fru c)       &&
+      not (checkTwoColours f_fld l_fld (flu c)) &&
+      not (checkTwoColours l_bld b_bld (blu c)) &&
+      checkTwoColours r_brd b_brd (bru c)          = repositionTopPieces $ repositionFLUBRUBLU (rotateMovesCube [U', U', D] c)
+    | otherwise                                    = repositionTopPieces (rotateCube U c)
+-}
+
+
+
+
+
+{-
+solveBottomLayer :: Cube -> Cube
+solveBottomLayer c
+    | isBottomLayerSolved c = c
+    | otherwise             = solveBottomLayer $ rotateCube D (solveFRD c)
+-}
+
 
 {-
 solveFRD :: Cube -> Cube
 solveFRD c@Cube { brd = (_, r_brd, d_brd) } = recursiveSolveFRD r_brd d_brd (repositionFRUFRD r_brd d_brd c)
 -}
-
-
-     
 
 
 -- given two colours, look for the corner which contains that colour, and reposition it to either FRU or FRD
@@ -336,11 +355,6 @@ repositionFRUFRD c1 c2 c@Cube {..}
 
 
 
--- checks two colours are in a triple
-checkTwoColours :: Colour -> Colour -> (Colour, Colour, Colour) -> Bool
-checkTwoColours c1 c2 (c3, c4, c5) = c1 `elem` [c3, c4, c5] && c2 `elem` [c3, c4, c5]
-
-
 -- first colour is R, second colour is D, and given a cube
 -- keep running swapFRUFRD until FRD is solved
 -- this function assumes that the corner containing the two colours are either in FRU or FRD position
@@ -351,14 +365,6 @@ recursiveSolveFRD cr cd c@Cube { frd = (_, r_frd, d_frd) }
     | r_frd == cr && d_frd == cd = c
     | otherwise                  = recursiveSolveFRD cr cd (swapFRUFRD c)
 -}
-
--- this swaps FRU and FRD, and swaps BLU and BRU. 
--- FLU, FRD, FLD, BLD and BRD does not change.
-swapFRUFRD :: Cube -> Cube
-swapFRUFRD = rotateMovesCube swapFRUFRDMoves
-
-swapFRUFRDMoves :: [Move]
-swapFRUFRDMoves = [M.R, U, R', U']
 
 
 

@@ -5,6 +5,7 @@ import CubeSpec
 import MovesSpec
 import BeginnerAlgorithmSpec
 
+-- Run all specification tests
 main :: IO ()
 main = do
     spec_cube <- testSpec "Cube Test" cubeSpecs
