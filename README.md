@@ -3,8 +3,6 @@ An interactive Haskell implementation of the 2x2 Rubiks cube.
 
 This project was developed as part of the Emurgo Blockchain developer course.
 
-Author : Sean 
-
 Credit to solver algorithm, code is based on the following:
  - Brute force  algorithm: https://github.com/KitN/rubiks-two-two
  - Beginner algorithm: https://jperm.net/2x2
@@ -67,8 +65,14 @@ Start game interactively:
 ```
 cabal -v0 run rubiks
 ```
-
-
+Start game in batch mode passing in a cube starting position and with a list of moves to execute:
+```
+cabal -v0 run rubiks -- -b -c  "Cube {flu = (O,G,Y), fru = (O,B,Y), fld = (B,O,W), frd = (B,R,W), blu = (R,G,Y), bru = (R,B,Y), bld = (G,O,W), brd = (G,R,W)}" -m "[F, L, D]"
+```
+Display help message:
+```
+cabal -v0 run rubiks -- -h
+```
 
 
 ## Design
