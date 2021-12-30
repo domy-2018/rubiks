@@ -24,7 +24,8 @@ Example screenshot below, shows the game started interactively and with a random
 
 
 ## Help
-Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]<br>
+<pre>
+Usage: rubiks [-b|--batch] [-c|--cube ARG] [-m|--moves ARG] [-l|--log LOGFILE]
   2x2 Rubiks cube game
 
 Available options:
@@ -33,7 +34,7 @@ Available options:
   -m,--moves ARG           Enter move list for batch mode
   -l,--log LOGFILE         Write rubiks moves history to LOGFILE
   -h,--help                Show this help text
-
+</pre>
 
 
 ## Design
