@@ -3,7 +3,7 @@ name:          rubiks
 version:       0.1.0.0
 
 synopsis:      A 2x2 rubiks cube game
-description:   A haskel implementation of the 2x2 rubiks cube game
+description:   A haskell implementation of the 2x2 rubiks cube game
 
 -- A URL where users can report bugs.
 -- bug-reports:

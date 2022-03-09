@@ -72,19 +72,27 @@ startInteractiveGame = do
         putStrLn "With the cube facing you, enter in the 3 colours of each face of the corners."
         putStrLn "Valid colours are: W Y R O B G"
         let cornerColours = map getCornerColours ["FLU", "FRU", "FLD", "FRD", "BLU", "BRU", "BLD", "BRD"]
+        putStrLn "Enter colours for corner FLU: "
         flu_c <- head cornerColours
+        putStrLn "Enter colours for corner FRU: "
         fru_c <- cornerColours !! 1
+        putStrLn "Enter colours for corner FLD: "
         fld_c <- cornerColours !! 2
+        putStrLn "Enter colours for corner FRD: "
         frd_c <- cornerColours !! 3
+        putStrLn "Enter colours for corner BLU: "
         blu_c <- cornerColours !! 4
+        putStrLn "Enter colours for corner BRU: "
         bru_c <- cornerColours !! 5
+        putStrLn "Enter colours for corner BLD: "
         bld_c <- cornerColours !! 6
+        putStrLn "Enter colours for corner BRD: "
         brd_c <- cornerColours !! 7
         return Cube { flu = flu_c, fru = fru_c, fld = fld_c, frd = frd_c, blu = blu_c, bru = bru_c, bld = bld_c, brd = brd_c }
 
     getCornerColours :: String -> IO (Colour, Colour, Colour)
     getCornerColours cs = do
-        putStr $ "Enter colours for corner " ++ cs ++ ": "
+        --putStr $ "Enter colours for corner " ++ cs ++ ": "
         input <- getLine
         let pc = parseCorner input
         maybe (putStrLn "Invalid colours entered. Please try again." >> getCornerColours cs) return pc 
